@@ -120,6 +120,32 @@
 
                     <div class="bg-white dark:bg-gray-700 overflow-hidden shadow-sm sm:rounded-lg mt-3 p-3">
                         {{ __("Shopping cart") }}
+                        @foreach($carts as $cart)
+                        @if($cart->user == $user->id)
+                        <div class="p-3 bg-gray-900 dark:bg-gray-600 w-auto min-h-12 h-auto rounded-lg m-2">
+                            <div class="flex flex-row justify-between">
+                                <div>
+                                    {{ App\Http\Controllers\CartController::formatCartItem($cart->items) }}
+                                </div>
+
+                                <form action="{{ route('cart.edit', $cart->id) }}" method="POST">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="number" id="quantity" name="quantity" min="0" max="20" class="text-black h-8 rounded-md" value="{{ App\Http\Controllers\CartController::getQuantityOnly($cart->items) }}">
+                                    <button type="submit" id="add-item" class="btn btn-primary text-black dark:text-white bg-green-500 h-8 px-2 rounded-md">Change quantity</button>
+                                </form>  
+
+                                <form action="{{ route('cart.destroy', $cart->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="button text-black dark:text-white bg-red-500 rounded-md" onclick="return confirm('Are you sure you want to delete this cart item?')">Delete Cart Item</button>
+                                </form>
+                            </div>
+                        </div>
+                        @endif
+                        @endforeach
+
+                        <a href="{{ url('/payment') }}" class="btn btn-primary text-black dark:text-white bg-green-500 h-8 p-1 rounded-md">Payment</a>
                     </div>
                 </div>
             </div>
@@ -167,9 +193,21 @@
                             Penetration<p class="text-gray-400">{{ $item->pen }}</p>
                         </div>
 
-                        <label for="quantity">Quantity (max 20)</label>
-                        <input type="number" id="quantity" name="quantity" min="0" max="20" class="text-black" value="0">
-                        
+
+                        <div class="flex mt-6">
+                            <div>
+                                <label for="quantity">Quantity (max 20)</label>
+                            </div>
+
+                            <div>
+                                <form class="ml-1" action="{{ route('cart.store', $item->id, $user->id) }}" method="POST">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="number" id="quantity" name="quantity" min="0" max="20" class="text-black h-8 rounded-md" value="0">
+                                    <button type="submit" id="add-item" class="btn btn-primary text-black dark:text-white bg-green-500 h-8 px-2 rounded-md">Add to shopping cart</button>
+                                </form>  
+                            </div>
+                        </div>
 
                         @if($user->type == 'admin')
                         <form action="{{ route('items.destroy', $item->id) }}" method="POST">

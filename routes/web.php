@@ -4,7 +4,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CartController;
 use App\Models\Item;
+use App\Models\Cart;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +27,9 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $user = Auth::user();
     $item = Item::all();
-    return view('dashboard', ['user' => $user, 'items' => $item]);
+    $cart = Cart::all();
+
+    return view('dashboard', ['user' => $user, 'items' => $item, 'carts' => $cart]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -36,4 +41,18 @@ Route::middleware('auth')->group(function () {
 Route::post('/dashboard', [ItemController::class, 'itemAdd'])->name('items.store');
 Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
 
+Route::post('/dashboard/{item}/add', [CartController::class, 'itemAdd'])->name('cart.store');
+Route::delete('/dashboard/{cart}/delete', [CartController::class, 'itemDestroy'])->name('cart.destroy');
+Route::post('/dashboard/{cart}/edit', [CartController::class, 'itemEdit'])->name('cart.edit');
+
+Route::post('/payment/pay', [PaymentController::class, 'pay'])->name('payment.store');
+
 require __DIR__.'/auth.php';
+
+Route::get('/payment', function () {
+    $item = Item::all();
+    $user = Auth::user();
+    $cart = Cart::all();
+
+    return view('payment', ['items' => $item, 'user' => $user, 'carts' => $cart]);
+})->middleware(['auth', 'verified'])->name('payment');;
