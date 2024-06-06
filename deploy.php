@@ -15,7 +15,7 @@ host('tak21tanak.itmajakas.ee')
     ->set('deploy_path', '~/domeenid/www.tak21tanak.itmajakas.ee/yl4')
     ->set('branch', 'master');
 
-set('repository', 'git@github.com:tanakimees/yl2.git');
+set('repository', 'git@github.com:tanakimees/yl4.git');
 
 // tasks
 task('opcache:clear', function () {
