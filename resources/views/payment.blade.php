@@ -56,6 +56,8 @@
                         @csrf
                         @method('POST')
 
+                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+
                         <div class="form-group flex">
                             <label class="text-black dark:text-white" for="title">First name:</label>
                             <input type="text" class="form-control @error('firstName') is-invalid @enderror text-black" id="firstName" name="firstName" value="{{ old('firstName') }}">

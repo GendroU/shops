@@ -47,6 +47,8 @@ Route::post('/dashboard/{cart}/edit', [CartController::class, 'itemEdit'])->name
 
 Route::post('/payment/pay', [PaymentController::class, 'pay'])->name('payment.store');
 
+Route::get('/success', 'App\Http\Controllers\StripeController@success')->name('success');
+
 require __DIR__.'/auth.php';
 
 Route::get('/payment', function () {
